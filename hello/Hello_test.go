@@ -10,19 +10,28 @@ func TestHello(t *testing.T) {
 			t.Errorf("got %q want %q", got, want)
 		}
 	}
+	/*
+		t.Run("saying hello to people", func(t *testing.T) {
+			got := Hello("Chris")
+			want := "Hello, Chris"
 
-	t.Run("saying hello to people", func(t *testing.T) {
-		got := Hello("Chris")
-		want := "Hello, Chris"
+			assertMassage(t, got, want)
+		})
+
+		t.Run("empty string defaults to 'World''", func(t *testing.T) {
+			got := Hello("")
+			want := "Hello, World"
+
+			assertMassage(t, got, want)
+
+		})
+	*/
+	t.Run("in Spanish", func(t *testing.T) {
+		got := Hello("Elodie", "Spanish")
+		want := "Hola, Elodie"
 
 		assertMassage(t, got, want)
-	})
-
-	t.Run("empty string defaults to 'World''", func(t *testing.T) {
-		got := Hello("")
-		want := "Hello, World"
-
-		assertMassage(t, got, want)
 
 	})
+
 }
