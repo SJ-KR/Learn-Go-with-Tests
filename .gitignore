@@ -1,0 +1,9 @@
+# Directories #
+result/
+.idea/
+# Data files #
+
+*.txt
+*.xml
+*.img
+*.png
