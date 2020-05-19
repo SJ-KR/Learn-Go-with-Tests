@@ -12,13 +12,12 @@ func Hello(name string, language string) string {
 	if name == "" {
 		name = "World"
 	}
-	if language == spanish {
+	switch language {
+	case spanish:
 		return fmt.Sprintf("%s, %s", spanishHello, name)
-	}
-	if language == french {
+	case french:
 		return fmt.Sprintf("%s, %s", frenchHello, name)
 	}
-
 	return fmt.Sprintf("%s, %s", englishHello, name)
 }
 func main() {
