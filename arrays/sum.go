@@ -8,11 +8,10 @@ func Sum(nums []int) int {
 	return sum
 }
 func SumAll(numbersToSum ...[]int) []int {
-	length := len(numbersToSum)
-	sums := make([]int, length)
+	var sums []int
 
-	for i := 0; i < length; i++ {
-		sums[i] = Sum(numbersToSum[i])
+	for _, numbers := range numbersToSum {
+		sums = append(sums, Sum(numbers))
 	}
 	return sums
 }
