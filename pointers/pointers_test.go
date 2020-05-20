@@ -11,10 +11,13 @@ func TestWallet(t *testing.T) {
 			t.Errorf("got %s, want %s", wallet.Balance(), want)
 		}
 	}
-	assertError := func(t *testing.T, err error) {
+	assertError := func(t *testing.T, got error, want string) {
 		t.Helper()
-		if err == nil {
-			t.Error("wanted an error but didn't get one")
+		if got == nil {
+			t.Fatal("didn't get an error but wanted one")
+		}
+		if got.Error() != want {
+			t.Errorf("got %s, want %q", got, want)
 		}
 	}
 	t.Run("Deposit", func(t *testing.T) {
@@ -31,13 +34,13 @@ func TestWallet(t *testing.T) {
 
 	})
 	t.Run("Withdraw insufficient funds", func(t *testing.T) {
-		startingBalance := Bitcoin(20)
-		wallet := Wallet{startingBalance}
+		wallet := Wallet{balance: Bitcoin(20)}
 
 		err := wallet.Withdraw(Bitcoin(100))
 
-		assertBalance(t, wallet, startingBalance)
-		assertError(t, err)
+		assertBalance(t, wallet, Bitcoin(20))
+		assertError(t, err, "cannot withdraw, insufficient funds")
+
 	})
 
 }
