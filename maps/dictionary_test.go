@@ -1,6 +1,8 @@
 package maps
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestSearch(t *testing.T) {
 	dictionary := Dictionary{"test": "this is just a test"}
@@ -23,22 +25,29 @@ func TestSearch(t *testing.T) {
 }
 func TestAdd(t *testing.T) {
 	dictionary := Dictionary{}
-	dictionary.Add("test", "this is just a test")
+	word := "test"
+	definition := "this is just a test"
 
-	want := "this is just a test"
-	got, err := dictionary.Search("test")
+	dictionary.Add(word, definition)
 
-	if err != nil {
-		t.Fatal("should find added word:", err)
-	}
+	assertDefinition(t, dictionary, word, definition)
 
-	if got != want {
-		t.Errorf("got %q, want %q", got, want)
-	}
 }
 func assertStrings(t *testing.T, got, want error) {
 	t.Helper()
 	if got != want {
 		t.Errorf("got error %q want %q", got, want)
+	}
+}
+
+func assertDefinition(t *testing.T, dictionary Dictionary, word, definition string) {
+
+	got, err := dictionary.Search(word)
+
+	if err != nil {
+		t.Fatal("should find added word:", err)
+	}
+	if got != definition {
+		t.Errorf("got %q, want %q", got, definition)
 	}
 }
