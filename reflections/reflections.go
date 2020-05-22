@@ -23,17 +23,21 @@ func getValue(x interface{}) reflect.Value {
 }
 func walk(x interface{}, fn func(input string)) {
 	val := getValue(x)
+	numberOfValues := 0
+
+	var getField func(int) reflect.Value
 
 	switch val.Kind() {
 	case reflect.String:
 		fn(val.String())
 	case reflect.Struct:
-		for i := 0; i < val.NumField(); i++ {
-			walk(val.Field(i).Interface(), fn)
-		}
+		numberOfValues = val.NumField()
+		getField = val.Field
 	case reflect.Slice:
-		for i := 0; i < val.Len(); i++ {
-			walk(val.Index(i).Interface(), fn)
-		}
+		numberOfValues = val.Len()
+		getField = val.Index
+	}
+	for i := 0; i < numberOfValues; i++ {
+		walk(getField(i).Interface(), fn)
 	}
 }
