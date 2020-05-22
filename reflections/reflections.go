@@ -26,7 +26,7 @@ func walk(x interface{}, fn func(input string)) {
 
 	//numberOfValues := 0
 	//var getField func(int) reflect.Value
-	walkValud := func(value reflect.Value) {
+	walkValue := func(value reflect.Value) {
 		walk(value.Interface(), fn)
 	}
 	switch val.Kind() {
@@ -36,17 +36,21 @@ func walk(x interface{}, fn func(input string)) {
 		//numberOfValues = val.NumField()
 		//getField = val.Field
 		for i := 0; i < val.NumField(); i++ {
-			walkValud(val.Field(i))
+			walkValue(val.Field(i))
 		}
 	case reflect.Slice, reflect.Array:
 		//numberOfValues = val.Len()
 		//getField = val.Index
 		for i := 0; i < val.Len(); i++ {
-			walkValud(val.Index(i))
+			walkValue(val.Index(i))
 		}
 	case reflect.Map:
 		for _, k := range val.MapKeys() {
-			walkValud(val.MapIndex(k))
+			walkValue(val.MapIndex(k))
+		}
+	case reflect.Chan:
+		for v, ok := val.Recv(); ok; v, ok = val.Recv() {
+			walk(v.Interface(), fn)
 		}
 	}
 	/*
