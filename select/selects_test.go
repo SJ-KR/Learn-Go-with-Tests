@@ -14,8 +14,8 @@ func TestRacer(t *testing.T) {
 
 		defer serverA.Close()
 		defer serverB.Close()
-
-		_, err := Racer(serverA.URL, serverB.URL)
+		duration := time.Second * 10
+		_, err := Racer(serverA.URL, serverB.URL, duration)
 		if err == nil {
 			t.Errorf("expected an error but didn't get one")
 		}
