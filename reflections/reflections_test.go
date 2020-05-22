@@ -36,6 +36,14 @@ func TestWalk(t *testing.T) {
 			}{"Codd", 28},
 			[]string{"Codd"},
 		},
+		{
+			"Nested fields",
+			Person{
+				"Chris",
+				Profile{28, "London"},
+			},
+			[]string{"Chris", "London"},
+		},
 	}
 
 	for _, test := range cases {
@@ -45,7 +53,6 @@ func TestWalk(t *testing.T) {
 				got = append(got, input)
 			})
 			fmt.Println(reflect.ValueOf(test))
-			fmt.Println(got)
 			if !reflect.DeepEqual(got, test.ExpectedCalls) {
 				t.Errorf("got %v, want %v", got, test.ExpectedCalls)
 			}
