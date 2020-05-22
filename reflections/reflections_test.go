@@ -21,11 +21,12 @@ func TestWalk(t *testing.T) {
 			[]string{"Chris"},
 		},
 		{
-			"Second case",
+			"Struct with two string fields",
 			struct {
 				Name string
-			}{"Codd"},
-			[]string{"Codd"},
+				Ciry string
+			}{"Codd", "London"},
+			[]string{"Codd", "London"},
 		},
 	}
 
