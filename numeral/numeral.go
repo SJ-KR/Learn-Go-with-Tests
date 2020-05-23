@@ -1,8 +1,12 @@
 package numeral
 
+import "strings"
+
 func ConvertToRoman(x int) string {
-	if x == 2 {
-		return "II"
+	var result strings.Builder
+	for i := 0; i < x; i++ {
+		result.WriteString("I")
 	}
-	return "I"
+
+	return result.String()
 }
