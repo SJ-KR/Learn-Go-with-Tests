@@ -1,7 +1,6 @@
 package numeral
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -39,7 +38,9 @@ func ConvertToRoman(x int) string {
 
 	return result.String()
 }
-func (r RomanNumerals) ValueOf(symbol string) int {
+func (r RomanNumerals) ValueOf(symbols ...byte) int {
+	symbol := string(symbols)
+
 	for _, s := range r {
 		if s.Symbol == symbol {
 			return s.Value
@@ -48,7 +49,8 @@ func (r RomanNumerals) ValueOf(symbol string) int {
 	return 0
 }
 func CouldBeSubtractive(i int, symbol uint8, roman string) bool {
-	return i+1 < len(roman) && symbol == 'I'
+	subtractiveSymbol := symbol == 'I' || symbol == 'X' || symbol == 'C'
+	return i+1 < len(roman) && subtractiveSymbol
 }
 func ConvertToArabic(roman string) int {
 	total := 0
@@ -56,18 +58,14 @@ func ConvertToArabic(roman string) int {
 		symbol := roman[i]
 
 		if CouldBeSubtractive(i, symbol, roman) {
-			nextSymbol := roman[i+1]
-
-			potentialNumber := string([]byte{symbol, nextSymbol})
-			fmt.Println(potentialNumber)
-			if value := allRomanNumerals.ValueOf(potentialNumber); value != 0 {
+			if value := allRomanNumerals.ValueOf(symbol, roman[i+1]); value != 0 {
 				total += value
 				i++
 			} else {
-				total++
+				total += allRomanNumerals.ValueOf(symbol)
 			}
 		} else {
-			total += allRomanNumerals.ValueOf(string([]byte{symbol}))
+			total += allRomanNumerals.ValueOf(symbol)
 		}
 	}
 	return total
