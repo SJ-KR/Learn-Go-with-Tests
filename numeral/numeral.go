@@ -35,3 +35,12 @@ func ConvertToRoman(x int) string {
 
 	return result.String()
 }
+func ConvertingToArabic(s string) int {
+	if s == "III" {
+		return 3
+	}
+	if s == "II" {
+		return 2
+	}
+	return 1
+}

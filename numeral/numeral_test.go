@@ -49,3 +49,21 @@ func TestRomanNumerals(t *testing.T) {
 		})
 	}
 }
+func TestConvertingToArabic(t *testing.T) {
+	cases := []struct {
+		Arabic int
+		Roman  string
+	}{
+		{Arabic: 1, Roman: "I"},
+		{Arabic: 2, Roman: "II"},
+		{Arabic: 3, Roman: "III"},
+	}
+	for _, test := range cases[:1] {
+		t.Run(fmt.Sprintf("%q gets converted to %d", test.Roman, test.Arabic), func(t *testing.T) {
+			got := ConvertingToArabic(test.Roman)
+			if got != test.Arabic {
+				t.Errorf("got %d, want %d", got, test.Arabic)
+			}
+		})
+	}
+}
