@@ -24,8 +24,7 @@ func TestServer(t *testing.T) {
 			t.Errorf(`got "%s", want "%s"`, response.Body.String(), data)
 		}
 
-		store.assertWasNotCancelled()
-		//store.assertWasCancelled()
+		//store.assertWasNotCancelled()
 	})
 	t.Run("tells store to cancel work", func(t *testing.T) {
 		store := &SpyStore{response: data, t: t}
@@ -37,28 +36,34 @@ func TestServer(t *testing.T) {
 		time.AfterFunc(time.Millisecond*5, cancel)
 		request = request.WithContext(cancelCtx)
 
-		response := httptest.NewRecorder()
+		response := &SpyResponseWriter{}
 
 		server.ServeHTTP(response, request)
 
-		store.assertWasCancelled()
+		if response.written {
+			t.Error("a response should have been written")
+		}
+		//store.assertWasCancelled()
 
 	})
 }
 func TestHandler(t *testing.T) {
-	t.Run("test store", func(t *testing.T) {
-		data := "Hello, World"
-		server := Server(&StubStore{data})
+	data := "Hello, world"
+	/*
+		t.Run("test store", func(t *testing.T) {
+			data := "Hello, World"
+			server := Server(&StubStore{data})
 
-		response := httptest.NewRecorder()
-		request := httptest.NewRequest(http.MethodGet, "/", nil)
+			response := httptest.NewRecorder()
+			request := httptest.NewRequest(http.MethodGet, "/", nil)
 
-		server.ServeHTTP(response, request)
+			server.ServeHTTP(response, request)
 
-		if response.Body.String() != data {
-			t.Errorf("got %s, want %s", response.Body.String(), data)
-		}
-	})
+			if response.Body.String() != data {
+				t.Errorf("got %s, want %s", response.Body.String(), data)
+			}
+		})
+	*/
 	t.Run("tells store to cancel work", func(t *testing.T) {
 		store := &SpyStore{}
 		server := Server(store)
@@ -71,13 +76,15 @@ func TestHandler(t *testing.T) {
 
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, request)
+		/*
+			if !store.cancelled {
+				t.Errorf("store was not told to cancel")
+			}
+		*/
 
-		if !store.cancelled {
-			t.Errorf("store was not told to cancel")
-		}
 	})
 	t.Run("returns data from store", func(t *testing.T) {
-		store := &SpyStore{response: "data"}
+		store := &SpyStore{response: data}
 		server := Server(store)
 
 		request := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -85,11 +92,13 @@ func TestHandler(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		if response.Body.String() != "data" {
-			t.Errorf(`got "%s", want "%s"`, response.Body.String(), "data")
+		if response.Body.String() != data {
+			t.Errorf(`got "%s", want "%s"`, response.Body.String(), data)
 		}
-		if store.cancelled {
-			t.Errorf("it should not have cancelled the store")
-		}
+		/*
+			if store.cancelled {
+				t.Errorf("it should not have cancelled the store")
+			}
+		*/
 	})
 }
