@@ -9,7 +9,41 @@ import (
 )
 
 func TestServer(t *testing.T) {
+	data := "Hello, World"
 
+	t.Run("returns data from store", func(t *testing.T) {
+		store := &SpyStore{response: data, t: t}
+		server := Server(store)
+
+		request := httptest.NewRequest(http.MethodGet, "/", nil)
+		response := httptest.NewRecorder()
+
+		server.ServeHTTP(response, request)
+
+		if response.Body.String() != data {
+			t.Errorf(`got "%s", want "%s"`, response.Body.String(), data)
+		}
+
+		store.assertWasNotCancelled()
+		//store.assertWasCancelled()
+	})
+	t.Run("tells store to cancel work", func(t *testing.T) {
+		store := &SpyStore{response: data, t: t}
+		server := Server(store)
+
+		request := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		cancelCtx, cancel := context.WithCancel(request.Context())
+		time.AfterFunc(time.Millisecond*5, cancel)
+		request = request.WithContext(cancelCtx)
+
+		response := httptest.NewRecorder()
+
+		server.ServeHTTP(response, request)
+
+		store.assertWasCancelled()
+
+	})
 }
 func TestHandler(t *testing.T) {
 	t.Run("test store", func(t *testing.T) {
