@@ -46,6 +46,13 @@ func SecondHandPoint(t time.Time) Point {
 	y := math.Cos(a)
 	return Point{x, y}
 }
+func MinuteHandPoint(t time.Time) Point {
+	a := minutesInRadians(t)
+	x := math.Sin(a)
+	y := math.Cos(a)
+
+	return Point{x, y}
+}
 
 type Svg struct {
 	XMLName xml.Name `xml:"svg"`
