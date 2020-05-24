@@ -112,6 +112,7 @@ func TestMinuteHandPoint(t *testing.T) {
 		point Point
 	}{
 		{simpleTime(0, 30, 0), Point{0, -1}},
+		{simpleTime(0, 45, 0), Point{-1, 0}},
 	}
 
 	for _, c := range cases {
@@ -123,11 +124,118 @@ func TestMinuteHandPoint(t *testing.T) {
 		})
 	}
 }
+func TestHoursInRadians(t *testing.T) {
+	cases := []struct {
+		time  time.Time
+		angle float64
+	}{
+		{simpleTime(6, 0, 0), math.Pi},
+	}
 
+	for _, c := range cases {
+		t.Run(testName(c.time), func(t *testing.T) {
+			got := hoursInRadians(c.time)
+			if got != c.angle {
+				t.Fatalf("Wanted %v radians, but got %v", c.angle, got)
+			}
+		})
+	}
+}
+func TestSVGWriterSecondHand(t *testing.T) {
+	cases := []struct {
+		time time.Time
+		line Line
+	}{
+		{
+			simpleTime(0, 0, 0),
+			Line{150, 150, 150, 60},
+		},
+		{
+			simpleTime(0, 0, 30),
+			Line{150, 150, 150, 240},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(testName(c.time), func(t *testing.T) {
+			b := bytes.Buffer{}
+			SVGWriter(&b, c.time)
+
+			svg := Svg{}
+			xml.Unmarshal(b.Bytes(), &svg)
+
+			if !containsLine(c.line, svg.Line) {
+				t.Errorf("Expected to find the second hand line %+v, in the SVG lines %+v", c.line, svg.Line)
+			}
+		})
+	}
+}
+func TestSVGWriterMinutedHand(t *testing.T) {
+	cases := []struct {
+		time time.Time
+		line Line
+	}{
+		{
+			simpleTime(0, 0, 0),
+			Line{150, 150, 150, 70},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(testName(c.time), func(t *testing.T) {
+			b := bytes.Buffer{}
+			SVGWriter(&b, c.time)
+
+			svg := Svg{}
+			xml.Unmarshal(b.Bytes(), &svg)
+
+			if !containsLine(c.line, svg.Line) {
+				t.Errorf("Expected to find the minute hand line %+v, in the SVG lines %+v", c.line, svg.Line)
+			}
+		})
+	}
+}
+
+/*
+func TestSVGWriterHourHand(t *testing.T) {
+	cases := []struct {
+		time time.Time
+		line Line
+	}{
+		{
+			simpleTime(6, 0, 0),
+			Line{150, 150, 150, 200},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(testName(c.time), func(t *testing.T) {
+			b := bytes.Buffer{}
+			SVGWriter(&b, c.time)
+
+			svg := Svg{}
+			xml.Unmarshal(b.Bytes(), &svg)
+
+			if !containsLine(c.line, svg.Line) {
+				t.Errorf("Expected to find the hour hand line %+v, in the SVG lines %+v", c.line, svg.Line)
+			}
+		})
+	}
+}
+
+*/
 func roughlyEqualFloat64(a, b float64) bool {
 	const Threshold = 1e-7
 	return math.Abs(a-b) < Threshold
 }
 func roughlyEqualPoint(a, b Point) bool {
 	return roughlyEqualFloat64(a.X, b.X) && roughlyEqualFloat64(a.Y, b.Y)
+}
+func containsLine(a Line, b []Line) bool {
+	for _, l := range b {
+		if a == l {
+			return true
+		}
+	}
+	return false
 }
