@@ -25,6 +25,8 @@ func SecondsInRadian(t time.Time) float64 {
 	return math.Pi / (30 / float64(t.Second()))
 }
 func SecondHandPoint(t time.Time) Point {
-
-	return Point{0, -1}
+	a := SecondsInRadian(t)
+	x := math.Sin(a)
+	y := math.Cos(a)
+	return Point{x, y}
 }
