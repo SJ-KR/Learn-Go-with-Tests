@@ -16,6 +16,7 @@ type Point struct {
 const (
 	secondHandLength = 90
 	minuteHandLength = 80
+	hourHandLength   = 50
 	CentreX          = 150
 	CentreY          = 150
 )
@@ -38,18 +39,22 @@ func testName(t time.Time) string {
 func SecondsInRadian(t time.Time) float64 {
 	return math.Pi / (30 / float64(t.Second()))
 }
-func minutesInRadians(t time.Time) float64 {
+func MinutesInRadians(t time.Time) float64 {
 	return (SecondsInRadian(t) / 60) + (math.Pi / (30 / float64(t.Minute())))
 }
 func hoursInRadians(t time.Time) float64 {
-	return (minutesInRadians(t) / 12) + (math.Pi / (6 / float64(t.Hour()%12)))
+	return (MinutesInRadians(t) / 12) + (math.Pi / (6 / float64(t.Hour()%12)))
 }
 func SecondHandPoint(t time.Time) Point {
 	a := SecondsInRadian(t)
 	return angleToPoint(a)
 }
 func MinuteHandPoint(t time.Time) Point {
-	a := minutesInRadians(t)
+	a := MinutesInRadians(t)
+	return angleToPoint(a)
+}
+func HourHandPoint(t time.Time) Point {
+	a := hoursInRadians(t)
 	return angleToPoint(a)
 }
 func angleToPoint(a float64) Point {
@@ -111,12 +116,18 @@ func minuteHand(w io.Writer, t time.Time) {
 
 	fmt.Fprintf(w, `<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#000;stroke-width:3px;"/>`, p.X, p.Y)
 }
+func hourHand(w io.Writer, t time.Time) {
+	p := makeHand(HourHandPoint(t), hourHandLength)
+
+	fmt.Fprintf(w, `<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#000;stroke-width:3px;"/>`, p.X, p.Y)
+}
 func SVGWriter(w io.Writer, t time.Time) {
 
 	io.WriteString(w, svgStart)
 	io.WriteString(w, bezel)
 	secondHand(w, t)
 	minuteHand(w, t)
+	hourHand(w, t)
 	io.WriteString(w, svgEnd)
 
 }
