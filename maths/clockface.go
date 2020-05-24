@@ -37,6 +37,9 @@ func testName(t time.Time) string {
 func SecondsInRadian(t time.Time) float64 {
 	return math.Pi / (30 / float64(t.Second()))
 }
+func minutesInRadians(t time.Time) float64 {
+	return (SecondsInRadian(t) / 60) + (math.Pi / (30 / float64(t.Minute())))
+}
 func SecondHandPoint(t time.Time) Point {
 	a := SecondsInRadian(t)
 	x := math.Sin(a)
@@ -66,6 +69,8 @@ type Line struct {
 	Y1 float64 `xml:"y1,attr"`
 	X2 float64 `xml:"x2,attr"`
 	Y2 float64 `xml:"y2,attr"`
+}
+type SVG struct {
 }
 
 const svgStart = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
