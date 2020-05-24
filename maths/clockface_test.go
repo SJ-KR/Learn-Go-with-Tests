@@ -27,10 +27,32 @@ func TestSecondsInRadian(t *testing.T) {
 		{simpleTime(0, 0, 7), (math.Pi / 30) * 7},
 	}
 	for _, c := range cases {
-		got := SecondsInRadian(c.time)
+		t.Run(testName(c.time), func(t *testing.T) {
+			got := SecondsInRadian(c.time)
 
-		if got != c.angle {
-			t.Fatalf("want %v radians, but got %v", c.angle, got)
-		}
+			if got != c.angle {
+				t.Fatalf("want %v radians, but got %v", c.angle, got)
+			}
+		})
+
+	}
+}
+
+func TestSecondHandVector(t *testing.T) {
+	cases := []struct {
+		time  time.Time
+		point Point
+	}{
+		{simpleTime(0, 0, 30), Point{0, -1}},
+	}
+	for _, c := range cases {
+		t.Run(testName(c.time), func(t *testing.T) {
+			got := SecondHandPoint(c.time)
+
+			if c.point != got {
+				t.Fatalf("want %v radians, but got %v", c.point, got)
+			}
+		})
+
 	}
 }

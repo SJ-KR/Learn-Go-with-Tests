@@ -24,3 +24,7 @@ func testName(t time.Time) string {
 func SecondsInRadian(t time.Time) float64 {
 	return math.Pi / (30 / float64(t.Second()))
 }
+func SecondHandPoint(t time.Time) Point {
+
+	return Point{0, -1}
+}
