@@ -10,8 +10,16 @@ type Point struct {
 	Y float64
 }
 
+const secondHandLength = 90
+const CentreX = 150
+const CentreY = 150
+
 func SecondHand(t time.Time) Point {
-	return Point{150, 60}
+	p := SecondHandPoint(t)
+	p = Point{p.X * secondHandLength, p.Y * secondHandLength}
+	p = Point{p.X, -p.Y}
+	p = Point{p.X + CentreX, p.Y + CentreY}
+	return p
 }
 
 func simpleTime(hours, minutes, seconds int) time.Time {

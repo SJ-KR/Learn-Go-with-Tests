@@ -16,6 +16,16 @@ func TestSecondHandAtMidnight(t *testing.T) {
 		t.Errorf("Got %v, wanted %v", got, want)
 	}
 }
+func TestSecondHandAt30Seconds(t *testing.T) {
+	times := time.Date(1337, time.January, 1, 0, 0, 30, 0, time.UTC)
+
+	want := Point{X: 150, Y: 150 + 90}
+	got := SecondHand(times)
+
+	if got != want {
+		t.Errorf("Got %v, wanted %v", got, want)
+	}
+}
 func TestSecondsInRadian(t *testing.T) {
 	cases := []struct {
 		time  time.Time
